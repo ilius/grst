@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/tychoish/grip"
 )
 
 type RstTable struct {
@@ -33,42 +31,47 @@ func (self *RstTable) check() (err error) {
 	return
 }
 
-func (self *RstTable) validate(fields []string) (err error) {
+func (self *RstTable) validate(fields []string) error {
 	if self.width == 0 {
 		// this is the first row, which all is correct.
 		self.width = len(fields)
 		self.maxFieldWidths = make([]int, self.width)
-
 		return nil
-	} else {
-		catcher := grip.NewCatcher()
-
-		if len(fields) != self.width {
-			catcher.Add(fmt.Errorf("row [$s] has %d columns, not %d, the required.",
-				strings.Join(fields, ","), len(self.rows), self.width))
-		}
-		if len(fields) != len(self.maxFieldWidths) {
-			catcher.Add(fmt.Errorf("row [$s] has %d columns, not %d, the required.",
-				strings.Join(fields, ","), len(self.rows), len(self.maxFieldWidths)))
-		}
-
-		return catcher.Resolve()
 	}
+
+	if len(fields) != self.width {
+		return fmt.Errorf(
+			"row [$s] has %v columns, not %v, the required. width=%v",
+			strings.Join(fields, ","), len(self.rows), self.width,
+		)
+	}
+	if len(fields) != len(self.maxFieldWidths) {
+		return fmt.Errorf(
+			"row [%v] has %v columns, not %v, the required.",
+			strings.Join(fields, ","), len(self.rows), len(self.maxFieldWidths),
+		)
+	}
+
+	return nil
 }
 
 func (self *RstTable) validateTable() error {
-	catcher := grip.NewCatcher()
-
-	catcher.Add(self.check()) // to validate width and column names
+	// to validate width and column names
+	err := self.check()
+	if err != nil {
+		return err
+	}
 
 	for idx, row := range self.rows {
 		if len(row) != self.width {
-			catcher.Add(fmt.Errorf("row number %d has %d columns, not the same width as the table (%d)",
-				idx, len(row), self.width))
+			return fmt.Errorf(
+				"row number %d has %d columns, not the same width as the table (%d)",
+				idx, len(row), self.width,
+			)
 		}
 	}
 
-	return catcher.Resolve()
+	return nil
 }
 
 func (self *RstTable) AddRow(fields ...string) (err error) {
@@ -187,7 +190,6 @@ func (self *RstBuilder) StandardTable(table *RstTable) error {
 	defer table.RUnlock()
 
 	lines := NewUnsafeBuilder()
-	catcher := grip.NewCatcher()
 
 	columnLines := make([]string, len(table.maxFieldWidths))
 	for idx, col := range table.maxFieldWidths {
@@ -195,7 +197,10 @@ func (self *RstBuilder) StandardTable(table *RstTable) error {
 	}
 	rowSeperator := "+" + strings.Join(columnLines, "+") + "+"
 
-	catcher.Add(lines.AddLine(rowSeperator))
+	err := lines.AddLine(rowSeperator)
+	if err != nil {
+		return err
+	}
 	for _, row := range table.rows {
 		paddedFields := make([]string, len(table.maxFieldWidths))
 
@@ -207,9 +212,15 @@ func (self *RstBuilder) StandardTable(table *RstTable) error {
 			}
 		}
 
-		catcher.Add(lines.AddLine("|" + strings.Join(paddedFields, "|") + "|"))
-		catcher.Add(lines.AddLine(rowSeperator))
+		err := lines.AddLine("|" + strings.Join(paddedFields, "|") + "|")
+		if err != nil {
+			return err
+		}
+		err = lines.AddLine(rowSeperator)
+		if err != nil {
+			return err
+		}
 	}
 
-	return catcher.Resolve()
+	return nil
 }

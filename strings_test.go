@@ -5,7 +5,7 @@ import (
 
 	. "gopkg.in/check.v1"
 
-	h "./headings"
+	h "github.com/ilius/grst/headings"
 )
 
 type StringSuite struct{}

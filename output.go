@@ -3,11 +3,10 @@ package grst
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/tychoish/grip"
 )
 
 func (self *RstBuilder) Write(fn string) error {
@@ -18,11 +17,10 @@ func (self *RstBuilder) Write(fn string) error {
 
 	dirName := filepath.Dir(fn)
 	err = os.MkdirAll(dirName, 0o755)
-	if err == nil {
-		grip.Noticeln("created directory:", dirName)
-	} else {
-		grip.Warning(err.Error())
+	if err != nil {
+		return err
 	}
+	log.Println("created directory:", dirName)
 
 	file, err := os.Create(fn)
 	if err != nil {
@@ -31,21 +29,22 @@ func (self *RstBuilder) Write(fn string) error {
 	defer file.Close()
 
 	w := bufio.NewWriter(file)
-	catcher := grip.NewCatcher()
+
 	var numBytes int
 	for _, line := range lines {
 		nb, err := fmt.Fprintln(w, line)
 		numBytes += nb
-		catcher.Add(err)
+		log.Println(err)
 	}
 
-	catcher.Add(w.Flush())
-
-	if catcher.HasErrors() == false {
-		grip.Debugf("wrote %d bytes to file '%f'.", numBytes, fn)
+	err = w.Flush()
+	if err != nil {
+		log.Println(err)
 	}
 
-	return catcher.Resolve()
+	log.Printf("wrote %d bytes to file '%s'.", numBytes, fn)
+
+	return nil
 }
 
 func (self *RstBuilder) Print() error {

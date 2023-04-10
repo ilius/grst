@@ -57,6 +57,7 @@ func (s *GeneratorSuite) TestNewLine(c *C) {
 
 	// s.Reset()
 }
+
 func (s *GeneratorSuite) TestHeadingTitle(c *C) {
 	c.Logf("running test with %s backend", s.Builder())
 
@@ -70,7 +71,6 @@ func (s *GeneratorSuite) TestHeadingTitle(c *C) {
 	for _, ln := range lines {
 		c.Assert(len(ln), Equals, len(t))
 	}
-
 }
 
 func (s *GeneratorSuite) TestHeadings(c *C) {
@@ -93,7 +93,6 @@ func (s *GeneratorSuite) TestHeadings(c *C) {
 
 		s.Reset()
 	}
-
 }
 
 func (s *GeneratorSuite) TestTarget(c *C) {
@@ -149,8 +148,8 @@ func (s *GeneratorSuite) TestRstField(c *C) {
 		c.Assert(ln, Equals, ":name: value")
 
 	}
-
 }
+
 func (s *GeneratorSuite) TestLi(c *C) {
 	c.Logf("running test with %s backend", s.Builder())
 
@@ -193,7 +192,6 @@ func (s *GeneratorSuite) TestLiCustomChar(c *C) {
 
 	for idx, ln := range lines {
 		c.Assert(string(ln[0]), Equals, chars[idx])
-
 	}
 }
 

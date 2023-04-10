@@ -25,7 +25,6 @@ func (s *FieldSuite) TestHeadingLineGenerator(c *C) {
 			c.Assert(len(heading), Equals, len(hl))
 		}
 	}
-
 }
 
 func (s *FieldSuite) TestRoles(c *C) {

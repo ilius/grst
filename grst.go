@@ -1,13 +1,12 @@
 package grst
 
 import (
-	"fmt"
-	"strings"
-
 	"./basic"
 	"./hashed"
 	"./headings"
 	"./unsafe"
+	"fmt"
+	"strings"
 )
 
 type RstGenerator interface {

@@ -17,7 +17,7 @@ func (self *RstBuilder) Write(fn string) error {
 	}
 
 	dirName := filepath.Dir(fn)
-	err = os.MkdirAll(dirName, 0755)
+	err = os.MkdirAll(dirName, 0o755)
 	if err == nil {
 		grip.Noticeln("created directory:", dirName)
 	} else {

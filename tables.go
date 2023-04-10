@@ -54,7 +54,6 @@ func (self *RstTable) validate(fields []string) (err error) {
 
 		return catcher.Resolve()
 	}
-
 }
 
 func (self *RstTable) validateTable() error {
@@ -213,5 +212,4 @@ func (self *RstBuilder) StandardTable(table *RstTable) error {
 	}
 
 	return catcher.Resolve()
-
 }

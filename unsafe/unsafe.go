@@ -57,7 +57,6 @@ func (self *RstUnsafeBuilder) IndentPadding() string {
 
 func (self *RstUnsafeBuilder) Indent() int {
 	return self.indent
-
 }
 
 func (self *RstUnsafeBuilder) SetIndent(n int) (err error) {

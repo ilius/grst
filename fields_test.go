@@ -10,6 +10,7 @@ func (s *FieldSuite) TestRstField(c *C) {
 	f := &RstFieldSet{}
 	fieldTester(c, f)
 }
+
 func fieldTester(c *C, f *RstFieldSet) {
 	// add a bunch of elements to the field set
 	for i := 0; i < 10; i++ {
@@ -25,16 +26,20 @@ func fieldTester(c *C, f *RstFieldSet) {
 	c.Assert(f.resolve(0), HasLen, 10)
 
 	// check resolution
-	c.Assert(f.resolve(0), DeepEquals, []string{":name: value",
+	c.Assert(f.resolve(0), DeepEquals, []string{
+		":name: value",
 		":name: value", ":name: value", ":name: value", ":name: value",
 		":name: value", ":name: value", ":name: value", ":name: value",
-		":name: value"})
+		":name: value",
+	})
 
 	// check resolution with indent
-	c.Assert(f.resolve(2), DeepEquals, []string{"  :name: value",
+	c.Assert(f.resolve(2), DeepEquals, []string{
+		"  :name: value",
 		"  :name: value", "  :name: value", "  :name: value", "  :name: value",
 		"  :name: value", "  :name: value", "  :name: value", "  :name: value",
-		"  :name: value"})
+		"  :name: value",
+	})
 
 	// check the iterator and it's output.
 	for fp := range f.Iter() {

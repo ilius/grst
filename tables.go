@@ -7,6 +7,12 @@ import (
 	"sync"
 )
 
+func NewRstTable() *RstTable {
+	return &RstTable{
+		RWMutex: &sync.RWMutex{},
+	}
+}
+
 type RstTable struct {
 	width          int
 	hasHeader      bool

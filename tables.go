@@ -186,9 +186,8 @@ func (self *RstBuilder) ListTable(table *RstTable) error {
 	outputLines, err := lines.GetLines()
 	if err != nil {
 		return err
-	} else {
-		return self.AddLines(outputLines)
 	}
+	return self.AddLines(outputLines)
 }
 
 func (self *RstBuilder) StandardTable(table *RstTable) error {
@@ -228,5 +227,9 @@ func (self *RstBuilder) StandardTable(table *RstTable) error {
 		}
 	}
 
-	return nil
+	outputLines, err := lines.GetLines()
+	if err != nil {
+		return err
+	}
+	return self.AddLines(outputLines)
 }
